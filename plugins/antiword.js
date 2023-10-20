@@ -24,10 +24,10 @@ inrl({
         return await message.send(`_antiword Activated_`)
     } else if(match.toLowerCase() == 'off') {
         const res = await removeAntiWord(message.jid)
-        return await message.send(`_Antifake ${res ? 'Deactivated':'Deactivation faild'}_`)
+        return await message.send(`_AntiWord ${res ? 'Deactivated':'Deactivation faild'}_`)
     } else if(match.toLowerCase() == 'list') {
         const {status,word,action} = await getAntiWords(message.jid);
-        if(!status) return await message.send('_antiwords not activated for this group_')
+        if(!status) return await message.send('_AntiWords not activated for this group_')
             return await message.send(
 `_*word* : ${word}_
 _*action* : ${action}_`
