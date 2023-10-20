@@ -7,10 +7,6 @@
     "start": "pm2 start . --attach --name inrl",
     "stop": "pm2 stop inrl"
   },
-  "engines": {
-    "npm": ">=9.7.2",
-    "node": ">=20.0.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inrl-official/inrl-bot-md.git"
