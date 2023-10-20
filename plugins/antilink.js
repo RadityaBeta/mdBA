@@ -23,7 +23,7 @@ inrl({
         return await message.send(`_AntiLink Activated with action null_\n_*AntiLink action* warn/kick/null for chaning actions_`)
     } else if(match.toLowerCase() == 'off') {
         const res = await removeAntiLink(message.jid)
-        return await message.send(`_Antifake ${res ? 'Deactivated':'Deactivation faild'}_`)
+        return await message.send(`_AntiLink ${res ? 'Deactivated':'Deactivation faild'}_`)
     }
     if(match.toLowerCase().match('action')) {
         match = match.replace(/action/gi,'').trim();
