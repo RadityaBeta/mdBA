@@ -8,29 +8,21 @@ const {
     getLang
 } = require('../lib');
 let lang = getLang()
+const {ADMIN_SUDO_ACCESS} = require('../config');
 
-const axios = require("axios");
-const fs = require('fs');
-async function isBotAdminV1(m, conn, jid) {
-    const groupMetadata = await conn.groupMetadata(jid).catch(e => {}),
-        participants = await groupMetadata.participants,
-        admins = await participants.filter(v => v.admin !== null).map(v => v.id);
-    return admins.includes(conn.user.jid)
-};
 
 inrl({
-    pattern: "promote",
-    react : "😎",
+    pattern: 'promote ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.PROMOTE.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         let admin = await isAdmin(message);
         let BotAdmin = await isBotAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         if (!message.quoted.sender) return message.reply(lang.BASE.NEED.format("user"));
         await message.client.groupParticipantsUpdate(message.jid,
             [message.quoted.sender], "promote");
@@ -45,18 +37,17 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "demote",
-    react : "🤐",
+    pattern: 'demote ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.DEMOTE.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     let admin = await isAdmin(message);
     let BotAdmin = await isBotAdmin(message);
     try {
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         if (!message.quoted.sender) return message.reply(lang.BASE.NEED.format("user"));
         await message.client.groupParticipantsUpdate(message.jid,
             [message.quoted.sender], "demote");
@@ -71,12 +62,11 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "kick",
-    react : "😤",
+    pattern: 'kick ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.KICK.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     let admin = await isAdmin(message);
     let BotAdmin = await isBotAdmin(message);
     let user = message.reply_message.sender || match;
@@ -85,8 +75,8 @@ inrl({
     try {
         if (match !="all") {
             if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-            if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+            if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
             await message.client.groupParticipantsUpdate(message.jid,
                 [user], "remove");
             return await message.client.sendMessage(message.jid, {
@@ -97,8 +87,8 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
             });
         } else if (match.toLowerCase() == 'all') {
             if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-            if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+            if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
             const groupMetadata = await message.client.groupMetadata(message.jid).catch(e => {})
             const participants = await groupMetadata.participants;
             let admins = await participants.filter(v => v.admin !== null).map(v => v.id);
@@ -116,20 +106,19 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "add",
-    react : "😋",
+    pattern: 'add ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.ADD.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     const BotAdmin = await isBotAdmin(message);
     const admin = await isAdmin(message);
     match = message.reply_message.sender || match;
     if(!match) return await message.reply(lang.BASE.NEED.format("user"));
     match = match.replaceAll(' ', '');
     if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-    if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+    if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
     if (match) {
         let users = match.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
         let info = await message.client.onWhatsApp(users);
@@ -180,18 +169,17 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     } 
 });
 inrl({
-    pattern: "gpp",
-    react : "😁",
+    pattern: 'gpp ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc : lang.GROUP.GPP.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         if (!message.quoted.image) return await message.reply(lang.BASE.NEED.format("image message"));
         let _message = message.quoted.imageMessage;
         let download = await message.client.downloadMediaMessage(_message);
@@ -202,18 +190,17 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 })
 inrl({
-    pattern: "fullgpp",
-    react : "🔥",
+    pattern: 'fullgpp ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.FULL_GPP.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         if (!message.quoted.image) return await message.reply(lang.BASE.NEED.format("image message"));
         let download = await message.quoted.download();
         await message.updateProfilePicture(message.jid, download);
@@ -223,18 +210,17 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "gname",
-    react : "🙃",
+    pattern: 'gname ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.G_NAME.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         if (message.client.text > 75) return await message.client.sendMessage(message.jid, {
             text: errorMessage(lang.GROUP.G_NAME.LENGTH_OVER)
         }, {
@@ -252,18 +238,17 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "gdesc",
-    react : "🙂",
+    pattern: 'gdesc ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc : lang.GROUP.G_DESC.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         if (message.client.text > 400) return await message.client.sendMessage(message.jid, {
             text: lang.GROUP.G_DESC.LENGTH_OVER
         }, {
@@ -281,17 +266,16 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "mute",
-    react : "🤙",
+    pattern: 'mute ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc : lang.GROUP.MUTE.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     const BotAdmin = await isBotAdmin(message);
     const admin = await isAdmin(message);
     if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-    if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+    if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
     try {
         await message.client.groupSettingUpdate(message.jid, "announcement");
         return await message.client.sendMessage(message.jid, {
@@ -304,17 +288,16 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "unmute",
-    react : "🤙",
+    pattern: 'unmute ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.UNMUTE.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     const BotAdmin = await isBotAdmin(message);
     const admin = await isAdmin(message);
     if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-    if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+    if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
     try {
         await message.client.groupSettingUpdate(message.jid, "not_announcement");
         return await message.client.sendMessage(message.jid, {
@@ -327,17 +310,16 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "lock",
-    react : "🤙",
+    pattern: 'lock ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc : lang.GROUP.LOCK.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     const BotAdmin = await isBotAdmin(message);
     const admin = await isAdmin(message);
     if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-    if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+    if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
     try {
         await message.client.groupSettingUpdate(message.jid, "locked");
         return await message.client.sendMessage(message.jid, {
@@ -350,17 +332,16 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "unlock",
-    react : "🤙",
+    pattern: 'unlock ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.UNLOCK.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     const BotAdmin = await isBotAdmin(message);
     const admin = await isAdmin(message);
     if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-    if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+    if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
     try {
         await message.client.groupSettingUpdate(message.jid, "unlocked");
         return await message.client.sendMessage(message.jid, {
@@ -373,13 +354,12 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "left",
-    react : "👋",
+    pattern: 'left ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.LEFT.DESC,
     fromMe: true
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         await message.client.groupLeave(message.jid)
     } catch (e) {
@@ -387,18 +367,17 @@ inrl({
     }
 });
 inrl({
-    pattern: "invite",
-    react : "💖",
+    pattern: 'invite ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc :lang.GROUP.INVITE.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         const code = await message.client.groupInviteCode(message.jid);
         return await message.client.sendMessage(message.jid, {
             text: lang.GROUP.INVITE.INFO.format(`https://chat.whatsapp.com/${code}`)
@@ -410,18 +389,17 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "revoke",
-    react : "👌",
+    pattern: 'revoke ?(.*)',
     type: 'group',
     onlyGroup: true,
     desc : lang.GROUP.REVOKE.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
     try {
         const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+if (!admin && !message.client.isCreator) return;
         await message.client.groupRevokeInvite(message.jid);
         return await message.client.sendMessage(message.jid, {
             text: lang.GROUP.REVOKE.INFO
@@ -433,8 +411,7 @@ if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NO
     }
 });
 inrl({
-    pattern: "acpt",
-    react : "🆗",
+    pattern: 'join ?(.*)',
     type: 'owner',
     fromMe: true,
     desc: lang.GROUP.ACPT.DESC
@@ -458,18 +435,17 @@ inrl({
     }
 });
 inrl({
-    pattern: "getinfo",
-    react : "🆗",
+    pattern: 'getinfo ?(.*)',
     type: 'group',
     desc : lang.GROUP.GET_INFO.DESC
-}, async (message, match, {ADMIN_SUDO_ACCESS}) => {
+}, async (message, match) => {
 match = match || message.reply_message.text;
 const BotAdmin = await isBotAdmin(message);
         const admin = await isAdmin(message);
         if (!BotAdmin) return await message.reply(lang.GROUP.BOT_ADMIN)
     try {
-        if(ADMIN_SUDO_ACCESS != "true" && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
-        if (!admin && !message.client.isCreator) return await message.reply(lang.BASE.NOT_AUTHR)
+        if(!ADMIN_SUDO_ACCESS && !message.client.isCreator) return;
+        if (!admin && !message.client.isCreator) return;
         if (!match || !match.match(/^https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]/)) return await message.reply(lang.GROUP.GET_INFO.GIVE_URL);
         let urlArray = (match).trim().split("/")[3];
         const response = await message.client.groupGetInviteInfo(urlArray)
