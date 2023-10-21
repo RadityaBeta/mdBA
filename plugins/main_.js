@@ -8,7 +8,7 @@ const {
     toAudio
 } = require('../lib');
 let lang = getLang()
-
+const {AUDIO_DATA,STICKER_DATA} = require('../config');
 const fs = require('fs');
 inrl({
     pattern: 'url',
@@ -25,35 +25,21 @@ inrl({
     desc: lang.GENERAL.TAKE_DESC,
     react: "⚒️",
     type: "utility"
-}, async (message, match, data) => {
-    let {
-        AUDIO_DATA,
-        STICKER_DATA
-    } = data;
+}, async (message, match) => {
     try {
         if (!message.quoted.sticker && !message.quoted.audio) return message.reply('reply to a sticker/audio');
         if (message.quoted.stickerMessage) {
-            let pack;
-            if (match.split(/[|,;]/)[1]) {
-                let i = match.split(/[|,;]/);
-                pack = i[0] ? i[0] : STICKER_DATA.split(/[|,;]/)[0];
-            } else {
-                pack = match || STICKER_DATA.split(/[|,;]/)[0];
-            }
+            match = match || STICKER_DATA;
             let media = await message.quoted.download();
-            return await message.client.sendFile(message.from, media, "", message, {
-                asSticker: true,
-                packname: pack,
-                categories: ["😄"],
+            return await message.sendSticker(message.jid, media, {
+                packname: match.split(/[|,;]/)[0] || match,
+                author: match.split(/[|,;]/)[1]
             });
         } else if (message.quoted.audioMessage) {
-            let text = message.client.text;
-            let img = AUDIO_DATA.split(/[|,;]/)[2];
-            img = text.split(/[|,;]/)[2] ? text.split(/[|,;]/)[2] : img;
-            if(!img) return await message.send(lang.GENERAL.IMG_NEED.format("adata get","adata name;name;url"));
-            img = img.trim()
-            let imgForaUdio = await getBuffer(img);
-            const AudioMeta = await AudioMetaData(imgForaUdio, await toAudio(await message.quoted.download()), text, data);
+            match = (match||'').split(/[|,;]/);
+            match =`${match[0]||AUDIO_DATA.split(/[|,;]/)[0]};${match[1]||AUDIO_DATA.split(/[|,;]/)[1]}`;
+            if(!img) return await message.send('_no images found_\n_use setvar audio_data and update it_');
+            const AudioMeta = await AudioMetaData(await getBuffer((match[2] || AUDIO_DATA.split(/[|,;]/)[2] || 'https://t4.ftcdn.net/jpg/04/00/24/31/360_F_400243185_BOxON3h9avMUX10RsDkt3pJ8iQx72kS3.jpg').trim()), await toAudio(await message.quoted.download()), match);
             return await message.conn.sendMessage(message.jid, {
                 audio: AudioMeta,
                 mimetype: 'audio/mpeg',
