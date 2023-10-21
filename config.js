@@ -5,16 +5,12 @@ if (existsSync('config.env')) require('dotenv').config({ path: './config.env' })
 process.env.NODE_OPTIONS = '--max_old_space_size=2560'//2.5
 const DB_URL =  process.env.DATABASE_URL || '';
 module.exports = {
-    SESSION_ID: process.env.SESSION_ID || 'inrl~ec9e0rJiw2381c1e0ccb6472b321e57a0b9c', //your ssid to run bot
-    MONGO_URL : process.env.MONGO_URL || "mongodb://mongo:IjPzlZbCLzjT65YBz3tD@containers-us-west-173.railway.app:6971",
+    SESSION_ID: process.env.SESSION_ID || '', //your ssid to run bot
     HEROKU: {
         API_KEY: process.env.HEROKU_API_KEY,
         APP_NAME: process.env.HEROKU_APP_NAME
     },
     BASE_URL : "https://inrl-web.onrender.com/",
-    PMB_MSG : "pm msgs isn't allowed",
-    PMBC_MSG : "pm call isn't allowed",
-    WA_GRP : process.env.WA_GRP || 'https://chat.whatsapp.com/ECjTvQMK5D6Bayzu6rJ7Ot',
     REJECT_CALL : toBool(process.env.REJECT_CALL || 'false'),
     BADWORD_BLOCK : toBool(process.env.BADWORD_BLOCK || 'false'),
     ALLWAYS_ONLINE: toBool(process.env.ALLWAYS_ONLINE || "true"),
