@@ -39,7 +39,7 @@ module.exports = {
     PREFIX : process.env.PREFIX || "[.,!]",
     LANG : process.env.LANG || "en",
     BLOCK_CHAT : process.env.BLOCK_CHAT || "jid@g.us, jid2@g.us",//set chat similarly
-    BOT_PRESENCE : process.env.BOT_PRESENCE || "recording",
+    BOT_PRESENCE : process.env.BOT_PRESENCE || "unavailable",
     AUDIO_DATA : process.env.AUDIO_DATA || "ᴍᴜꜱɪᴄ;ᴋɪᴅ;https://i.imgur.com/DyLAuEh.jpg",
     STICKER_DATA : process.env.STICKER_DATA || "inrl;inrl",
     SUDO : process.env.SUDO || "null",
