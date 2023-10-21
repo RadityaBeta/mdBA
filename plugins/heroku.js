@@ -119,10 +119,10 @@ inrl({
         if (!key || !value) return await message.send('setvar STICKER_DATA: inrl;md');
         await heroku.patch('/apps/' + process.env.HEROKU_APP_NAME + '/config-vars', {
                 body: {
-                        [key.trim().toUpperCase()]: value.trim()
+                        [key.trim().toUpperCase()]: match.replace(key,'').replace(':','').trim()
                 }
         }).then(async () => {
-                await message.send('Successfully Set ' + '```' + varKey + '➜' + varValue + '```')
+                await message.send('Successfully Set ' + '```' + key + '➜' + match.replace(key,'').replace(':','').trim() + '```')
         }).catch(async (error) => {
                 await message.send(`HEROKU : ${error.body.message}`)
         })
