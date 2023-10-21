@@ -71,11 +71,9 @@ inrl({
     }
     let md = await fetchJson(`https://tenor.googleapis.com/v2/featured?key=AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ&contentfilter=high&media_filter=png_transparent&component=proactive&collection=emoji_kitchen_v5&q=${encodeURIComponent(emoji1)}_${encodeURIComponent(emoji2)}`)
     for (let res of md.results) {
-        await message.client.sendFile(message.from, await getBuffer(res.url), "",message, {
-          asSticker: true,
-          author: STICKER_DATA.split(/[|,;]/)[0],
-          packname: STICKER_DATA.split(/[|,;]/)[1],
-          categories: ["😄", "😊"],
+        return await message.sendSticker(message.jid, res.url, {
+                packname: STICKER_DATA.split(/[|,;]/)[0] || STICKER_DATA,
+                author: STICKER_DATA.split(/[|,;]/)[1]
         });
     }
 })
