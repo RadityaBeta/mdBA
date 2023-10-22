@@ -2,7 +2,7 @@ const {inrl,mention,getVar,UpdateVariable} = require('../lib');
 const {BASE_URL} = require('../config');
 inrl({
     pattern: 'mention ?(.*)',
-	on: "all",
+    on: "all",
     allowBot: true,
     fromMe: 'public'
 }, async (message, match) => {
