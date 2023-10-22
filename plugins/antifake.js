@@ -31,7 +31,7 @@ inrl({
         const res = await removeAntiFake(message.jid)
         return await message.send(`_Antifake ${res ? 'Deactivated':'Deactivation faild'}_`)
     }
-    match = match.replace(/[^0-9,]/g, "");
+    match = match.replace(/[^0-9,!]/g, "");
     await setAntiFake(message.jid,{data: match})
     return await message.send(`_Antifake Updated_`);
 });
