@@ -17,12 +17,12 @@ inrl({
     if (match != 'on' && match != 'off') return message.reply('pdm on');
     let pdm = await getPdm(message.jid)
     if (match == "on") {
-            if (pdm) return message.reply('_Alredy activated_');
+            if (pdm) return message.reply('_Already activated_');
             await setpdm(message.jid)
             return await message.reply('_activated_')
     } else if (match == "off") {
-            if (!pdm) return message.reply('_Alredy Deactivated_');
+            if (!pdm) return message.reply('_Already Deactivated_');
             await removePdm(message,jid)
             return await message.reply('_deactivated_')
-    }
+    }>
 });
