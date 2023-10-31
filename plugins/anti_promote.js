@@ -21,7 +21,7 @@ inrl({
         return await message.reply('_activated_')
     } else if (match == "off") {
         if (!promote) return message.reply('_Already Deactivated_');
-        await antiPromote(message, jid, {
+        await antiPromote(message.jid, {
             status: false
         })
         return await message.reply('_deactivated_')
