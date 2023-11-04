@@ -5,18 +5,18 @@ if (existsSync('config.env')) require('dotenv').config({ path: './config.env' })
 process.env.NODE_OPTIONS = '--max_old_space_size=2560'//2.5
 const DB_URL =  process.env.DATABASE_URL || '';
 module.exports = {
-    SESSION_ID: process.env.SESSION_ID || '', //your ssid to run bot
+    SESSION_ID: process.env.SESSION_ID || 'inrl~e2e73xLTRd60054eae6e5a510b439ef38d56', //your ssid to run bot
     HEROKU: {
         API_KEY: process.env.HEROKU_API_KEY,
         APP_NAME: process.env.HEROKU_APP_NAME
     },
     BASE_URL : "https://inrl-web.onrender.com/",
     REJECT_CALL : toBool(process.env.REJECT_CALL || 'false'),
-    BADWORD_BLOCK : toBool(process.env.BADWORD_BLOCK || 'false'),
+    BADWORD_BLOCK : toBool(process.env.BADWORD_BLOCK || 'true'),
     ALLWAYS_ONLINE: toBool(process.env.ALLWAYS_ONLINE || "false"),
     REACT : toBool(process.env.REACT || "false"),
     ANTI_SPAM : toBool(process.env.ANTI_SPAM || "false"),
-    SPAM_BLOCK : toBool(process.env.SPAM_BLOCK || "false"),
+    SPAM_BLOCK : toBool(process.env.SPAM_BLOCK || "true"),
     PM_BLOCK : toBool(process.env.PM_BLOCK || "false"),
     BGMBOT : toBool(process.env.BGMBOT || "false"),
     CALL_BLOCK : toBool(process.env.CALL_BLOCK || "false"),
@@ -33,14 +33,14 @@ module.exports = {
     WARNCOUND : process.env.WARNCOUND || 5,
     ALIVE_DATA : process.env.ALIVE_DATA || "_iam alive now &sender_",
     BOT_INFO : process.env.BOT_INFO || "INRL-BOT-MD;INRL;https://i.imgur.com/DyLAuEh.jpg",
-    WORKTYPE : process.env.WORKTYPE || "private",
-    PREFIX : process.env.PREFIX || "[.,!]",
+    WORKTYPE : process.env.WORKTYPE || "public",
+    PREFIX : process.env.PREFIX || "[.#!]",
     LANG : process.env.LANG || "en",
     BLOCK_CHAT : process.env.BLOCK_CHAT || "jid@g.us, jid2@g.us",//set chat similarly
-    BOT_PRESENCE : process.env.BOT_PRESENCE || "unavailable",
+    BOT_PRESENCE : process.env.BOT_PRESENCE || "composing",
     AUDIO_DATA : process.env.AUDIO_DATA || "ᴍᴜꜱɪᴄ;ᴋɪᴅ;https://i.imgur.com/DyLAuEh.jpg",
-    STICKER_DATA : process.env.STICKER_DATA || "inrl;inrl",
-    SUDO : process.env.SUDO || "null",
+    STICKER_DATA : process.env.STICKER_DATA || "RadityaBotz",
+    SUDO : process.env.SUDO || "6281227259557",
     RMBG_KEY: process.env.RMBG_KEY,
     DATABASE: DB_URL ? new Sequelize(DB_URL,{dialect:'postgres',ssl:true,protocol: 'postgres', dialectOptions: {native: true,ssl:{require: true,rejectUnauthorized: false}}, logging: false}) : new Sequelize({dialect:'sqlite',storage:'./database.db',logging:false}) 
 };
